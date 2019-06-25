@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>AutoTouch Store</title>
+    <style type="text/css" media="screen">
+        body {
+            font-family: '-apple-system', 'HelveticaNeue', sans-serif;
+            font-size: 62.5%;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="script" v-html="script.detailsPage"></div>
+    </div>
+
+
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/axios.min.js"></script>
+    <script type="text/javascript">
+
+        axios.defaults.baseURL = "https://server.autotouch.net";
+
+        function getQueryStringValue(key) {
+            return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    scriptId: getQueryStringValue('id'),
+                    script: null
+                };
+            },
+            created() {
+                this.loadDetails();
+            },
+            methods: {
+                loadDetails() {
+                    let self = this;
+
+                    let url = `/scripts/${this.scriptId}`;
+                    axios
+                        .get(url)
+                        .then(function (response) {
+                            self.script = response.data;
+                        })
+                        .catch(function (error) {
+                            self.$notify({ group: "main", type: "error", text: error });
+                        });
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
