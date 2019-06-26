@@ -5,7 +5,6 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
     <title>AutoTouch Store</title>
     <style type="text/css" media="screen">
         body {
@@ -17,47 +16,31 @@
 </head>
 
 <body>
-    <div id="app">
-        <div v-if="script" v-html="script.detailsPage"></div>
-    </div>
+    <div id="details-page"></div>
 
-
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/axios.min.js"></script>
     <script type="text/javascript">
-
-        axios.defaults.baseURL = "https://server.autotouch.net";
-
         function getQueryStringValue(key) {
             return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
         }
 
-        var app = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    scriptId: getQueryStringValue('id'),
-                    script: null
-                };
-            },
-            created() {
-                this.loadDetails();
-            },
-            methods: {
-                loadDetails() {
-                    let self = this;
+        const scriptId = getQueryStringValue('id');
 
-                    let url = `/scripts/${this.scriptId}`;
-                    axios
-                        .get(url)
-                        .then(function (response) {
-                            self.script = response.data;
-                        })
-                        .catch(function (error) {
-                            self.$notify({ group: "main", type: "error", text: error });
-                        });
-                }
+        const server = 'https://server.autotouch.net';
+        let url = `${server}/scripts/${scriptId}`;
+
+        function httpGetAsync(theUrl, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
             }
+            xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+            xmlHttp.send(null);
+        }
+
+        httpGetAsync(url, (result) => {
+            const script = JSON.parse(result);
+            document.getElementById('details-page').innerHTML = script.detailsPage;
         });
     </script>
 

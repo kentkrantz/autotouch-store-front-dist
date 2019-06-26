@@ -5,11 +5,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="icon" href="/static/img/favicon.ico">
     <title>AutoTouch Store</title>
-    <style type="text/css" media="screen">
+    <style>
         body {
-            font-family: '-apple-system', 'HelveticaNeue', sans-serif;
+            font-family: "-apple-system", "HelveticaNeue", sans-serif;
             font-size: 62.5%;
             padding: 0;
         }
@@ -25,8 +24,8 @@
             padding: 1.2rem;
             margin: 0.5rem;
             border-radius: 0.8rem;
-            box-shadow: 0 0 2rem #BCBCBC;
-            color: #FFFFFF;
+            box-shadow: 0 0 2rem #bcbcbc;
+            color: #ffffff;
             font-size: 1.1rem;
             font-weight: 500;
             line-height: 1.3rem;
@@ -39,17 +38,17 @@
         }
 
         .blackboard .caution {
-            color: #EEEEEE;
+            color: #eeeeee;
             font-weight: 400;
             font-size: 0.8rem;
-            line-height: 1.0rem;
+            line-height: 1rem;
         }
 
         .blackboard a,
         .blackboard a:hover,
         .blackboard a:active,
         .blackboard a:focus {
-            color: #FFFFFF;
+            color: #ffffff;
             text-decoration: none;
         }
 
@@ -59,7 +58,7 @@
             padding: 1.2rem;
             margin: 0.5rem;
             border-radius: 0.8rem;
-            box-shadow: 0 0 1rem #DADADA;
+            box-shadow: 0 0 1rem #dadada;
             display: grid;
             grid-template-columns: auto;
             grid-row-gap: 0.2rem;
@@ -74,15 +73,16 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            padding: .35rem .7rem;
+            padding: 0.35rem 0.7rem;
             font-size: 0.7rem;
             font-weight: 600;
             line-height: 1.5;
-            border-radius: 3.0rem;
+            border-radius: 3rem;
             color: #fff;
             background-color: #6c757d;
             border-color: #6c757d;
-            transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+                box-shadow 0.15s ease-in-out;
         }
 
         .script-card .btn:hover {
@@ -97,13 +97,13 @@
         }
 
         .script-card .author {
-            font-size: 1.0rem;
+            font-size: 1rem;
             font-weight: 500;
             color: #6c757d;
         }
 
         .script-card .price {
-            font-size: 1.0rem;
+            font-size: 1rem;
             color: #6c757d;
         }
 
@@ -146,13 +146,11 @@
             position: absolute;
         }
     </style>
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/axios.min.js"></script>
 </head>
 
 <body>
     <div id="app">
-        <div class="cards">
+        <div class="cards" id="cards-field">
             <div class="blackboard">
                 <p>Want to sell your scripts?</p>
                 <p>
@@ -166,65 +164,51 @@
                     <a href="https://discord.gg/GUXu4uZ">Discord server.</a>
                 </p>
             </div>
-
-            <div v-for="script in scripts" v-bind:key="script.id" class="script-card" v-on:click="tapOnCard(script.id)">
-                <div class="title">{{script.title}}</div>
-
-                <div style="display: flex; flex-direction: row; align-content: center;justify-content: space-between;">
-                    <div class="author">{{script.username}}</div>
-                    <div class="price">${{script.price}}</div>
-                </div>
-
-                <div style="display: flex; flex-direction: row; align-items: center;justify-content: space-between;">
-                    <div class="downloads">{{script.downloadTimes}} Downloads</div>
-                    <button class="btn" v-on:click.stop.prevent="downloadFile(script.id)">DOWNLOAD</button>
-                </div>
-
-                <div class="description">{{script.description}}</div>
-            </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        axios.defaults.baseURL = "https://server.autotouch.net";
+        const server = 'https://server.autotouch.net';
+        const url = `${server}/scripts/public?page=${1}&count=${50}`;
 
-        var app = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    scripts: [],
-                    page: 1,
-                    count: 50,
-                    total: 0,
-                };
-            },
-            created() {
-                this.loadScripts();
-            },
-            methods: {
-                loadScripts(page = 1, count = 50) {
-                    let self = this;
+        const Card = (script) => `
+        <div class="script-card" onclick="tapOnCard(${script.id})">
+            <div class="title">${script.title}</div>
+            <div style="display: flex; flex-direction: row; align-content: center;justify-content: space-between;">
+                <div class="author">${script.user_name}</div>
+                <div class="price">$${script.price}</div>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center;justify-content: space-between;">
+                <div class="downloads">${script.download_times} Downloads</div>
+                <button class="btn" onclick="downloadFile(${script.id})">DOWNLOAD</button>
+            </div>
+            <div class="description">${script.description}</div>
+        </div>
+        `;
 
-                    let url = `/scripts/public?page=${page}&count=${count}`;
-                    axios
-                        .get(url)
-                        .then(function (response) {
-                            self.scripts = response.data.scripts;
-                            self.total = response.data.total;
-                        })
-                        .catch(function (error) {
-                            self.$notify({ group: "main", type: "error", text: error });
-                        });
-                },
-                tapOnCard(scriptId) {
-                    window.location.href = `/details.html?id=${scriptId}`;
-                },
-                downloadFile(scriptId) {
-                    window.webkit.messageHandlers.download.postMessage(scriptId);
-                    window.event.stopPropagation();
-                }
+        function httpGetAsync(theUrl, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
             }
+            xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+            xmlHttp.send(null);
+        }
+
+        httpGetAsync(url, (result) => {
+            const scripts = JSON.parse(result).scripts;
+            document.getElementById('cards-field').innerHTML += scripts.map(Card).join('');
         });
+
+        function tapOnCard(scriptId) {
+            window.location.href = `/details.html?id=${scriptId}`;
+        }
+
+        function downloadFile(scriptId) {
+            window.webkit.messageHandlers.download.postMessage(scriptId);
+            window.event.stopPropagation();
+        }
     </script>
 
 </body>
