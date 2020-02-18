@@ -222,8 +222,16 @@
             document.getElementById('cards-field').innerHTML += scripts.map(Card).join('');
         });
 
+        function getChipID() {
+            const url = new URL(window.location.href);
+            const chipID = url.searchParams.get("chipID");
+            return chipID;
+        }
+
         function tapOnCard(scriptId) {
-            window.location.href = `/details.html?id=${scriptId}`;
+            const chipID = getChipID();
+            alert(chipID);
+            window.location.href = `/details.html?id=${scriptId}&chipID=${chipID}`;
         }
 
         function downloadFile(scriptId) {
