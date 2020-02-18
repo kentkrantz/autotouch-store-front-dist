@@ -148,22 +148,24 @@
 
         @media (prefers-color-scheme: dark) {
             body {
-                background-color: rgb(0,0,0);
+                background-color: rgb(0, 0, 0);
                 color: white;
             }
+
             a:link {
                 color: #0077b3;
             }
+
             a:visited {
                 color: #9d57df;
             }
 
             .script-card {
-                box-shadow: 0 0 2rem rgb(50,50,50);
+                box-shadow: 0 0 2rem rgb(50, 50, 50);
             }
 
             .blackboard {
-                box-shadow: 0 0 2rem rgb(50,50,50);
+                box-shadow: 0 0 2rem rgb(50, 50, 50);
             }
         }
     </style>
@@ -222,15 +224,16 @@
             document.getElementById('cards-field').innerHTML += scripts.map(Card).join('');
         });
 
-        function getChipID() {
+        function getSNAndChipID() {
             const url = new URL(window.location.href);
+            const sn = url.searchParams.get("sn");
             const chipID = url.searchParams.get("chipID");
-            return chipID;
+            return { ssn, chipID };
         }
 
         function tapOnCard(scriptId) {
-            const chipID = getChipID();
-            window.location.href = `/details.html?id=${scriptId}&chipID=${chipID}`;
+            const { sn, chipID } = getSNAndChipID();
+            window.location.href = `/details.html?id=${scriptId}&sn=${sn}&chipID=${chipID}`;
         }
 
         function downloadFile(scriptId) {
