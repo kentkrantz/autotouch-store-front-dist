@@ -38,9 +38,9 @@
 
         const scriptId = getQueryStringValue('id');
 
-        const url = new URL(window.location.href);
-        const sn = url.searchParams.get("sn");
-        const chipID = url.searchParams.get("chipID");
+        const url1 = new URL(window.location.href);
+        const sn = url1.searchParams.get("sn");
+        const chipID = url1.searchParams.get("chipID");
         alert(sn);
         alert(chipID);
 
