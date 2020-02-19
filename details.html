@@ -15,12 +15,14 @@
 
         @media (prefers-color-scheme: dark) {
             body {
-                background-color: rgb(0,0,0);
+                background-color: rgb(0, 0, 0);
                 color: white;
             }
+
             a:link {
                 color: #0077b3;
             }
+
             a:visited {
                 color: #9d57df;
             }
@@ -38,11 +40,13 @@
 
         const scriptId = getQueryStringValue('id');
 
-        const url1 = new URL(window.location.href);
-        const sn = url1.searchParams.get("sn");
-        const chipID = url1.searchParams.get("chipID");
-        alert(sn);
-        alert(chipID);
+        document.addEventListener('DOMContentLoaded', function () {
+            const url1 = new URL(window.location.href);
+            const sn = url1.searchParams.get("sn");
+            const chipID = url1.searchParams.get("chipID");
+            alert(sn);
+            alert(chipID);
+        }, false);
 
         const server = 'https://server.autotouch.net';
         let url = `${server}/scripts/${scriptId}`;
