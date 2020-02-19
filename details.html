@@ -38,6 +38,11 @@
 
         const scriptId = getQueryStringValue('id');
 
+        const sn = url.searchParams.get("sn");
+        const chipID = url.searchParams.get("chipID");
+        alert(sn);
+        alert(chipID);
+
         const server = 'https://server.autotouch.net';
         let url = `${server}/scripts/${scriptId}`;
 
