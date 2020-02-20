@@ -55,7 +55,12 @@
 
         httpGetAsync(url, (result) => {
             const script = JSON.parse(result);
-            document.getElementById('details-page').innerHTML = script.detailsPage;
+            const elem = document.getElementById('details-page');
+            elem.innerHTML = script.detailsPage;
+
+            var arr = elem.getElementsByTagName('script')
+            for (var n = 0; n < arr.length; n++)
+                eval(arr[n].innerHTML)//run script inside div
         });
     </script>
 
